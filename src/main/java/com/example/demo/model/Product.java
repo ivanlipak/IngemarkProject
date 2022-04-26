@@ -1,13 +1,17 @@
 package com.example.demo.model;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import javax.persistence.*;
 import javax.persistence.Id;
-import java.io.*;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 
 @Entity
 @Table
@@ -27,16 +31,17 @@ public class Product{
     private String code;
     private String name;
     private BigDecimal priceHrk;
+    @Transient
     private BigDecimal priceEur;
     private String description;
     private Boolean isAvailable;
 
-    public Product(long id, String code, String name, BigDecimal priceHrk, BigDecimal priceEur, String description, Boolean isAvailable) {
+    public Product(long id, String code, String name, BigDecimal priceHrk,
+                    String description, Boolean isAvailable) {
         this.id = id;
         this.code = code;
         this.name = name;
         this.priceHrk = priceHrk;
-        this.priceEur = priceEur;
         this.description = description;
         this.isAvailable = isAvailable;
     }
@@ -44,11 +49,11 @@ public class Product{
     public Product(){
     }
 
-    public Product(String code, String name, BigDecimal priceHrk, BigDecimal priceEur, String description, Boolean isAvailable) {
+    public Product(String code, String name, BigDecimal priceHrk,
+                    String description, Boolean isAvailable) {
         this.code = code;
         this.name = name;
         this.priceHrk = priceHrk;
-        this.priceEur = priceEur;
         this.description = description;
         this.isAvailable = isAvailable;
     }
@@ -89,8 +94,20 @@ public class Product{
         this.priceHrk = priceHrk;
     }
 
-    public BigDecimal getPriceEur(){
-        return this.priceEur;
+    public BigDecimal getPriceEur() {
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.hnb.hr/tecajn/v1?valuta=EUR")).build();
+        String object = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .join();
+
+        JSONArray jsonArray = new JSONArray(object);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        String eurString = jsonObject.getString("Srednji za devize");
+        BigDecimal eur = new BigDecimal(eurString
+                .replace(',', '.'));
+        return eur.multiply(this.priceHrk);
     }
 
     public Boolean getAvailable() {
@@ -107,7 +124,7 @@ public class Product{
                 "code='" + code + '\'' +
                 ", name='" + name + '\'' +
                 ", priceHrk=" + priceHrk +
-                ", priceEur=" + priceEur +
+                ", priceEur=" + getPriceEur() +
                 ", description='" + description + '\'' +
                 ", isAvailable=" + isAvailable +
                 '}';

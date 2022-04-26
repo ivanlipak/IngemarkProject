@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Configuration
-public class StudentConfig {
+public class ProductConfig {
 
     @Bean
     CommandLineRunner commandLineRunner(
@@ -19,7 +19,6 @@ public class StudentConfig {
                             "324312423",
                             "naziv",
                             BigDecimal.valueOf(22),
-                            BigDecimal.valueOf(22),
                             "fdsafsaf",
                             Boolean.TRUE
                     );
@@ -27,7 +26,6 @@ public class StudentConfig {
                     Product b = new Product(
                             "11111111",
                             "naziv3",
-                            BigDecimal.valueOf(33),
                             BigDecimal.valueOf(33),
                             "fsfsdfasfdsaf",
                             Boolean.TRUE

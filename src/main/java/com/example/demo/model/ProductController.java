@@ -2,10 +2,9 @@ package com.example.demo.model;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,6 +23,24 @@ public class ProductController {
     @GetMapping
     public List<Product> getProducts(){
         return productService.getProducts();
+    }
+
+    @PostMapping
+    public void addNewProduct(@RequestBody Product product){
+        productService.addNewProduct(product);
+    }
+
+    @DeleteMapping(path = "{productId}")
+    public void deleteProduct(@PathVariable("productId") Long productId){
+        productService.deleteProduct(productId);
+    }
+
+    @PutMapping(path = "{productId}")
+    public void updateProduct (
+        @PathVariable("productId") Long productId,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) BigDecimal priceHrk){
+        productService.updateProduct(productId, name, priceHrk);
     }
 
 }
