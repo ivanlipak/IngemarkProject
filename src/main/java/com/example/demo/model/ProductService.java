@@ -3,6 +3,7 @@ package com.example.demo.model;
 
 import com.example.demo.exceptions.CodeLengthException;
 import com.example.demo.exceptions.PriceLessThanZeroException;
+import com.example.demo.exceptions.ProductExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,18 +28,15 @@ public class ProductService {
     }
 
     public void addNewProduct(Product product) {
-        //can't have 2 products with same code
         Optional<Product> productByCode = productRepository
                 .findProductByCode(product.getCode());
 
-
-        //napravi svoje ex
         if(productByCode.isPresent()){
-            throw new IllegalStateException("Code taken");
+            throw new ProductExistsException("Product with " + product.getCode() + " already exists!");
         }if(product.getCode().length()!=10){
-            throw new IllegalStateException("Less than 10");
+            throw new CodeLengthException("Code " + product.getCode() +  " invalid");
         }if(product.getPriceHrk().compareTo(BigDecimal.ZERO)==-1){
-            throw new IllegalStateException("Negative price");
+            throw new PriceLessThanZeroException("Negative price");
         }
         productRepository.save(product);
 
@@ -47,16 +45,15 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         boolean exists = productRepository.existsById(productId);
         if (!exists){
-            throw new IllegalStateException("Product with id " + productId + " does not exist!");
+            throw new ProductExistsException("Product with id " + productId + " does not exist!");
         }
         productRepository.deleteById(productId);
-
     }
 
     @Transactional
     public void updateProduct(Long productId, String name, BigDecimal priceHrk) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new ProductExistsException(
                         "Product with id " + productId + " does not exist."
                 ));
 

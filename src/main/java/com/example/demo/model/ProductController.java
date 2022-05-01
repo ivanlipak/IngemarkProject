@@ -4,7 +4,6 @@ package com.example.demo.model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 

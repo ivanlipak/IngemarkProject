@@ -1,7 +1,5 @@
 package com.example.demo.model;
 
-
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.persistence.*;
@@ -11,7 +9,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
 
 @Entity
 @Table
@@ -94,8 +91,8 @@ public class Product{
         this.priceHrk = priceHrk;
     }
 
-    public BigDecimal getPriceEur() {
-
+    public BigDecimal getPriceEur()
+    {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.hnb.hr/tecajn/v1?valuta=EUR")).build();
         String object = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
