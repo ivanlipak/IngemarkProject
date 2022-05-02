@@ -19,7 +19,7 @@ Installation
   Running with Git
 	
   Clone the Repo
-    $ git clone https://github.com/ivanlipak/IngemarkProject.git
+    $ git clone https://github.com/ivanlipak/ProductProject.git
   
 
 
